@@ -15,8 +15,8 @@ InputDecoration textfieldInputDecoration(String hinttext) {
   return InputDecoration(
     hintText: hinttext,
     hintStyle: textfieldHintStyle(),
-    focusedBorder: myborder(),
-    enabledBorder: myborder(),
+    focusedBorder: textFieldBorder(),
+    enabledBorder: textFieldBorder(),
   );
 }
 
@@ -24,7 +24,7 @@ TextStyle textfieldHintStyle() {
   return const TextStyle(color: Colors.white54);
 }
 
-UnderlineInputBorder myborder() {
+UnderlineInputBorder textFieldBorder() {
   return const UnderlineInputBorder(
     borderSide: BorderSide(color: Colors.white),
   );
