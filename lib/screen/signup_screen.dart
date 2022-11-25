@@ -17,8 +17,10 @@ class _SignupScreenState extends State<SignupScreen> {
   var _passwordController = TextEditingController();
   var _usernameController = TextEditingController();
   var _isLoading = false;
-  var _authService = AuthService();
+  var authService = AuthService();
   var _databaseMethods = DatabaseMethods();
+  var email = 'w@gmail.com';
+  var password = '111111111';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,11 +49,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: textfieldInputDecoration('Please enter email'),
                   style: textfieldHintStyle(),
                   validator: (val) {
-                    // emailValidateExpression.hasMatch(val!)
-                    //     ? null
-                    //     : 'Please enter correct email';
                     if (val == null || val.isEmpty) {
-                      return 'Please enter email';
+                      return 'please fill field';
+                    } else if (!emailValidateExpression.hasMatch(val)) {
+                      return 'please enter correct email';
                     } else {
                       return null;
                     }
@@ -61,9 +62,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _passwordController,
                   obscureText: true,
                   validator: (val) {
-                    return val!.length > 6
-                        ? null
-                        : 'Enter Password With morethan 6 character';
+                    if (val == null || val.isEmpty) {
+                      return 'please enter password';
+                    } else {
+                      return null;
+                    }
                   },
                   style: textfieldHintStyle(),
                   decoration: textfieldInputDecoration('please enter password'),
@@ -76,6 +79,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: 60,
                   child: ElevatedButton(
                     onPressed: () {
+                      setState(() {
+                        //_isLoading = true;
+                        email = _emailController.text;
+                        password = _passwordController.text;
+                      });
+                      print(email);
                       signUp();
                     },
                     child: Text('Sign up'),
@@ -130,30 +139,31 @@ class _SignupScreenState extends State<SignupScreen> {
       backgroundColor: Colors.black,
     );
   }
-
+// Error:
+// statically data inserted
+// my mean is if we specify email insted of _emailController 
+// it works
   signUp() async {
     if (_globalSignupFormKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-      await _authService
-          .signUpWithEmailAndPassword(
-        'iamtejasb@gmail.com',
-        '12345678',
-      )
-          .then((value) {
-        print(_emailController.text);
-        print(_passwordController.text);
-        if (value != null) {
-          Map<String, String> userMap = {
-            'username': 'Tejas',
-            'email': 'a@gmail.com'
-          };
-          print('$userMap');
+      await authService.signUpWithEmailAndPassword(
+        _emailController.text,
+        'password',
+      );
+      // .then((value) {
+      //print(_emailController.text);
+      //print(_passwordController.text);
+      // if (value != null) {
+      //   Map<String, String> userMap = {
+      //     'userName': _usernameController.text.toString(),
+      //     'userEmail': _emailController.text.toString()
+      //   };
+      //   print('$userMap');
 
-          _databaseMethods.addUserInfo(userMap);
-        }
-      });
+      //  await _databaseMethods.addUserInfo(userMap);
+      // }
+      //}
+      //);'
+
     }
   }
 }
